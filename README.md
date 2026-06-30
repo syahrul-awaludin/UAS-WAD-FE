@@ -96,14 +96,23 @@ Aplikasi ini dapat diuji secara *End-to-End* (E2E) melalui browser untuk memvali
 - Masukkan informasi pendaftaran (contoh: Nama `neymar`, Email `neymar@example.com`, dan password Anda).
 - Setelah berhasil, login dengan kredensial tersebut di halaman `/login`.
 
+![Halaman Registrasi](./public/screenshots/1-register.png)
+
 ### 2. State Kosong (Empty State) & Profil
 - Jika ini adalah akun baru, halaman `Tasks` akan menampilkan layar bersih dengan pesan *"Belum ada task. Buat task pertamamu!"*.
 - Anda dapat menekan menu **Profil** di bilah navigasi (Navbar) atas untuk melihat detail akun yang sedang masuk.
+
+![State Kosong](./public/screenshots/2-empty-state.png)
+![Profil Pengguna](./public/screenshots/3-profile.png)
 
 ### 3. Pembuatan & Pembaruan (Create & Edit Task)
 - **Create**: Klik tombol **+ Task Baru**. Isi formulir judul (contoh: *"Belajar dribble seperti Messi"*), deskripsi, status, dan prioritas, lalu simpan.
 - **Edit**: Pada *Task Card* yang muncul, klik *icon* pensil ✏️. Anda dapat mengubah statusnya (misal menjadi *"Sedang Dikerjakan"*).
 
+![Edit Task](./public/screenshots/4-edit-task.png)
+
 ### 4. Menghapus Task (Delete) & Logout
 - **Delete**: Klik *icon* tempat sampah 🗑️ pada *Task Card*. Sebuah konfirmasi *pop-up* akan muncul. Pilih **OK**, maka data task akan dihapus permanen.
 - **Logout**: Klik tombol **Keluar** di pojok kanan atas.
+
+![Delete Task](./public/screenshots/5-delete-task.png)
