@@ -92,27 +92,29 @@ Proyek ini menggunakan standard Vanilla CSS (di dalam `index.css`) untuk menyusu
 Aplikasi ini dapat diuji secara *End-to-End* (E2E) melalui browser untuk memvalidasi alur kerja pengguna secara keseluruhan. Berikut adalah skenario pengujiannya:
 
 ### 1. Pendaftaran & Autentikasi (Register / Login)
-- Buka `http://localhost:5173/register`.
-- Masukkan informasi pendaftaran (contoh: Nama `neymar`, Email `neymar@example.com`, dan password Anda).
-- Setelah berhasil, login dengan kredensial tersebut di halaman `/login`.
-
+- Buka `http://localhost:5173/register`. Masukkan nama, email, dan password Anda.
+- Setelah berhasil mendaftar, Anda akan diarahkan untuk Login di halaman `/login`.
 ![Halaman Registrasi](./public/screenshots/1-register.png)
+![Halaman Login](./public/screenshots/2-login.png)
 
 ### 2. State Kosong (Empty State) & Profil
 - Jika ini adalah akun baru, halaman `Tasks` akan menampilkan layar bersih dengan pesan *"Belum ada task. Buat task pertamamu!"*.
-- Anda dapat menekan menu **Profil** di bilah navigasi (Navbar) atas untuk melihat detail akun yang sedang masuk.
-
-![State Kosong](./public/screenshots/2-empty-state.png)
-![Profil Pengguna](./public/screenshots/3-profile.png)
+- Tekan menu **Profil** di Navbar atas untuk melihat detail akun yang sedang masuk (data diambil dari API profil).
+![State Kosong](./public/screenshots/3-empty-state.png)
+![Profil Pengguna](./public/screenshots/4-profile.png)
 
 ### 3. Pembuatan & Pembaruan (Create & Edit Task)
-- **Create**: Klik tombol **+ Task Baru**. Isi formulir judul (contoh: *"Belajar dribble seperti Messi"*), deskripsi, status, dan prioritas, lalu simpan.
-- **Edit**: Pada *Task Card* yang muncul, klik *icon* pensil ✏️. Anda dapat mengubah statusnya (misal menjadi *"Sedang Dikerjakan"*).
+- **Create**: Klik tombol **+ Task Baru**. Isi formulir judul, deskripsi, status, prioritas, dan tenggat waktu. Setelah sukses, task akan langsung muncul di daftar!
+![Add Task Form](./public/screenshots/5-add-task.png)
+![Task Berhasil Ditambahkan](./public/screenshots/7-add-task-success.png)
 
-![Edit Task](./public/screenshots/4-edit-task.png)
+- **Edit**: Pada *Task Card* yang muncul, klik ikon pensil ✏️ untuk mengubah detailnya (seperti status "Sedang Dikerjakan"). Data akan otomatis diperbarui.
+![Edit Task Form](./public/screenshots/6-edit-task.png)
 
 ### 4. Menghapus Task (Delete) & Logout
-- **Delete**: Klik *icon* tempat sampah 🗑️ pada *Task Card*. Sebuah konfirmasi *pop-up* akan muncul. Pilih **OK**, maka data task akan dihapus permanen.
-- **Logout**: Klik tombol **Keluar** di pojok kanan atas.
+- **Delete**: Klik ikon tempat sampah 🗑️ pada *Task Card*. Sebuah konfirmasi akan muncul (*"Yakin ingin menghapus task ini?"*). 
+- Pilih **OK**, maka data task akan dihapus secara permanen, dan tampilan akan kembali kosong atau ter-*update*.
+![Konfirmasi Delete](./public/screenshots/8-delete-confirmation.png)
+![Delete Sukses](./public/screenshots/9-success-delete.png)
 
-![Delete Task](./public/screenshots/5-delete-task.png)
+- **Logout**: Klik tombol **Keluar** di pojok kanan atas. Sesi Anda akan berakhir, mencegah akses tanpa izin.
