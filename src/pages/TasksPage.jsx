@@ -3,22 +3,24 @@ import { Navbar } from "../components/Navbar";
 import { TaskCard } from "../components/TaskCard";
 import { TaskForm } from "../components/TaskForm";
 import { taskService } from "../services/task.service";
+import { useRealTimeTasks } from "../hooks/useRealTimeTasks"; // ← TAMBAH
 
 export function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
   const [filter, setFilter] = useState("ALL");
 
-  // Fetch semua task
+  // ── REAL-TIME: satu baris ini menangani semua update live ──
+  useRealTimeTasks(setTasks); // ← TAMBAH
+
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const params = filter !== "ALL" ? { status: filter.toLowerCase() } : {};
+      const params = filter !== "ALL" ? { status: filter } : {};
       const res = await taskService.getAll(params);
       setTasks(res.data);
     } catch (err) {
@@ -28,76 +30,63 @@ export function TasksPage() {
     }
   }, [filter]);
 
-  useEffect(() => { fetchTasks(); }, [fetchTasks]);
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
-  // CREATE
   const handleCreate = async (formData) => {
-    const payload = { ...formData };
-    payload.status = payload.status.toLowerCase();
-    payload.priority = payload.priority.toLowerCase();
-    if (!payload.dueDate) {
-      delete payload.dueDate;
-    } else {
-      const d = new Date(payload.dueDate);
-      d.setHours(23, 59, 59, 999);
-      payload.dueDate = d.toISOString();
-    }
-    
     try {
-      const newTask = await taskService.create(payload);
-      setTasks(prev => [newTask, ...prev]);
+      const newTask = await taskService.create(formData);
+      // Tambahkan ke list lokal jika belum ada (mencegah duplikat dengan event Socket.IO)
+      setTasks((prev) => {
+        const exists = prev.some((t) => t.id === newTask.id);
+        if (exists) return prev;
+        return [newTask, ...prev];
+      });
       setShowForm(false);
     } catch (err) {
       if (err.response?.data?.error?.details) {
-        const msgs = err.response.data.error.details.map(d => d.message).join('\\n');
-        alert('Gagal membuat task:\\n' + msgs);
+        const msgs = err.response.data.error.details.map(d => `${d.field}: ${d.message}`).join('\\n');
+        alert(`Gagal membuat task:\\n${msgs}`);
       } else {
-        alert('Gagal membuat task: ' + (err.response?.data?.error?.message || err.message));
+        alert("Gagal membuat task: " + (err.response?.data?.error?.message || err.message));
       }
-      console.error('Create Error Payload:', payload);
     }
   };
 
-  // EDIT — buka form dengan data task yang ada
   const handleEditClick = (task) => {
     setEditTarget(task);
     setShowForm(true);
   };
 
-  // UPDATE
   const handleUpdate = async (formData) => {
-    const payload = { ...formData };
-    payload.status = payload.status.toLowerCase();
-    payload.priority = payload.priority.toLowerCase();
-    if (!payload.dueDate) {
-      delete payload.dueDate;
-    } else {
-      const d = new Date(payload.dueDate);
-      d.setHours(23, 59, 59, 999);
-      payload.dueDate = d.toISOString();
-    }
-
     try {
-      const updated = await taskService.update(editTarget.id, payload);
-      setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
+      const updatedTask = await taskService.update(editTarget.id, formData);
+      // Update state lokal langsung (fallback jika Socket.IO offline)
+      setTasks((prev) =>
+        prev.map((t) => (t.id === editTarget.id ? updatedTask : t))
+      );
       setShowForm(false);
       setEditTarget(null);
     } catch (err) {
       if (err.response?.data?.error?.details) {
-        const msgs = err.response.data.error.details.map(d => d.message).join('\\n');
-        alert('Gagal mengupdate:\\n' + msgs);
+        const msgs = err.response.data.error.details.map(d => `${d.field}: ${d.message}`).join('\\n');
+        alert(`Gagal menyimpan perubahan:\\n${msgs}`);
       } else {
-        alert('Gagal mengupdate task: ' + (err.response?.data?.error?.message || err.message));
+        alert("Gagal menyimpan perubahan: " + (err.response?.data?.error?.message || err.message));
       }
-      console.error('Update Error Payload:', payload);
     }
   };
 
-  // DELETE
   const handleDelete = async (id) => {
     if (!window.confirm("Yakin ingin menghapus task ini?")) return;
-    await taskService.remove(id);
-    setTasks(prev => prev.filter(t => t.id !== id));
+    try {
+      await taskService.remove(id);
+      // Update state lokal langsung (fallback jika Socket.IO offline)
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      alert("Gagal menghapus task: " + (err.response?.data?.error?.message || err.message));
+    }
   };
 
   const handleCloseForm = () => {
@@ -115,39 +104,31 @@ export function TasksPage() {
             + Task Baru
           </button>
         </div>
-        
-        {/* Filter Status */}
+
         <div className="filter-bar">
-          {["ALL","TODO","IN_PROGRESS","DONE"].map(s => (
+          {["ALL", "todo", "in_progress", "done"].map((s) => (
             <button
               key={s}
               className={`filter-btn ${filter === s ? "active" : ""}`}
               onClick={() => setFilter(s)}
             >
-              {s === "ALL" ? "Semua" : s === "TODO" ? "Belum Dimulai" : s === "IN_PROGRESS" ? "Sedang Dikerjakan" : "Selesai"}
+              {s === "ALL" ? "Semua" : s === "todo" ? "Belum Dimulai" : s === "in_progress" ? "Sedang" : "Selesai"}
             </button>
           ))}
         </div>
-        
-        {/* Konten */}
+
         {loading && <p className="state-msg">Memuat task...</p>}
         {error && <p className="state-msg error">{error}</p>}
         {!loading && !error && tasks.length === 0 && (
-          <p className="state-msg">Belum ada task. Buat task pertamamu!</p>
+          <p className="state-msg">Belum ada task.</p>
         )}
-        
+
         <div className="task-grid">
-          {tasks.map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onEdit={handleEditClick}
-              onDelete={handleDelete}
-            />
+          {tasks.map((task) => (
+            <TaskCard key={task.id} task={task} onEdit={handleEditClick} onDelete={handleDelete} />
           ))}
         </div>
-        
-        {/* Modal Form */}
+
         {showForm && (
           <TaskForm
             onSubmit={editTarget ? handleUpdate : handleCreate}

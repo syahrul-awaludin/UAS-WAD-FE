@@ -7,12 +7,18 @@ export default defineConfig({
     proxy: {
       // Semua request ke /api/... diteruskan ke backend
       "/api": {
-        target: "http://localhost:3000",
+        target: "http://localhost:3001",
         changeOrigin: true,
       },
       // Semua request ke /auth/... diteruskan ke backend
       "/auth": {
-        target: "http://localhost:3000",
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+      // Proxy untuk Socket.IO
+      "/socket.io": {
+        target: "http://localhost:3001",
+        ws: true,
         changeOrigin: true,
       },
     },

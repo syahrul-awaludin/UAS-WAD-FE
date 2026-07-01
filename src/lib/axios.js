@@ -57,6 +57,12 @@ api.interceptors.response.use(
         const newToken = data.accessToken;
 
         TokenStore.setAccessToken(newToken);
+        
+        // Dispatch custom event untuk reconnect socket
+        window.dispatchEvent(new CustomEvent("token:refreshed", {
+          detail: { token: newToken }
+        }));
+        
         processQueue(null, newToken);
 
         orig.headers.Authorization = `Bearer ${newToken}`;
