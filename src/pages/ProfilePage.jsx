@@ -32,8 +32,8 @@ export function ProfilePage() {
                 <tr>
                   <td><strong>Role</strong></td>
                   <td>
-                    <span className={`role-badge ${user?.role?.toLowerCase()}`}>
-                      {user?.role}
+                    <span className={`role-badge ${(user?.role || "User").toLowerCase()}`}>
+                      {user?.role || "User"}
                     </span>
                   </td>
                 </tr>

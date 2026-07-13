@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
 
         // Ambil data user
         const { data: me } = await axios.get("/api/v1/auth/me", {
-          headers: { Authorization: `Bearer ${data.data.accessToken}` },
+          headers: { Authorization: `Bearer ${data.accessToken}` },
         });
         setUser(me.data);
       } catch {

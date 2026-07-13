@@ -8,7 +8,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { TasksPage } from "./pages/TasksPage";
 import { ProfilePage } from "./pages/ProfilePage";
-
+import { ProjectsPage } from "./pages/ProjectsPage";
+import { ProjectDetailPage } from "./pages/ProjectDetailPage";
 export default function App() {
   return (
     <AuthProvider>
@@ -22,6 +23,8 @@ export default function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Navigate to="/tasks" replace />} />
                 <Route path="/tasks" element={<TasksPage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/projects/:id" element={<ProjectDetailPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>
 

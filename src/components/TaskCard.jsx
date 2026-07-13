@@ -1,19 +1,19 @@
 export function TaskCard({ task, onEdit, onDelete }) {
   // Mapping status ke label dan warna
   const statusConfig = {
-    todo: { label: "Belum Dimulai", color: "#6b7280" },
-    in_progress: { label: "Sedang Dikerjakan", color: "#2563eb" },
-    done: { label: "Selesai", color: "#16a34a" },
+    TODO: { label: "Belum Dimulai", color: "#6b7280" },
+    IN_PROGRESS: { label: "Sedang Dikerjakan", color: "#2563eb" },
+    DONE: { label: "Selesai", color: "#16a34a" },
   };
 
   const priorityConfig = {
-    low: { label: "Rendah", color: "#6b7280" },
-    medium: { label: "Sedang", color: "#d97706" },
-    high: { label: "Tinggi", color: "#dc2626" },
+    LOW: { label: "Rendah", color: "#6b7280" },
+    MEDIUM: { label: "Sedang", color: "#d97706" },
+    HIGH: { label: "Tinggi", color: "#dc2626" },
   };
 
-  const s = statusConfig[task.status] || statusConfig.todo;
-  const p = priorityConfig[task.priority] || priorityConfig.medium;
+  const s = statusConfig[task.status] || statusConfig.TODO;
+  const p = priorityConfig[task.priority] || priorityConfig.MEDIUM;
 
   return (
     <div className="task-card">

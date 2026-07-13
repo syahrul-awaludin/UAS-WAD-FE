@@ -31,6 +31,7 @@ export function Navbar() {
         </div>
 
         <Link to="/tasks">Tasks</Link>
+        <Link to="/projects">Projects</Link>
         <Link to="/profile">Profil</Link>
         <span className="navbar-user">Halo, {user?.name}</span>
         <button onClick={handleLogout} className="btn-logout">

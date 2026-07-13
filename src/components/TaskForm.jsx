@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { Modal } from "./common/Modal";
 
 export function TaskForm({ onSubmit, onCancel, initialData = null }) {
   const isEdit = !!initialData;
@@ -12,15 +13,12 @@ export function TaskForm({ onSubmit, onCancel, initialData = null }) {
   } = useForm({
     defaultValues: initialData
       ? {
-          ...initialData,
-          status: initialData.status?.toLowerCase(),
-          priority: initialData.priority?.toLowerCase(),
         }
       : {
           title: "",
           description: "",
-          status: "todo",
-          priority: "medium",
+          status: "TODO",
+          priority: "MEDIUM",
           dueDate: "",
         },
   });
@@ -29,18 +27,13 @@ export function TaskForm({ onSubmit, onCancel, initialData = null }) {
   useEffect(() => {
     if (initialData) {
       reset({
-        ...initialData,
-        status: initialData.status?.toLowerCase(),
-        priority: initialData.priority?.toLowerCase(),
+        ...initialData
       });
     }
   }, [initialData, reset]);
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        <h2>{isEdit ? "Edit Task" : "Buat Task Baru"}</h2>
-        
+    <Modal title={isEdit ? "Edit Task" : "Buat Task Baru"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <label>Judul *</label>
@@ -57,17 +50,17 @@ export function TaskForm({ onSubmit, onCancel, initialData = null }) {
             <div className="form-group">
               <label>Status</label>
               <select {...register("status")}>
-                <option value="todo">Belum Dimulai</option>
-                <option value="in_progress">Sedang Dikerjakan</option>
-                <option value="done">Selesai</option>
+                <option value="TODO">Belum Dimulai</option>
+                <option value="IN_PROGRESS">Sedang Dikerjakan</option>
+                <option value="DONE">Selesai</option>
               </select>
             </div>
             <div className="form-group">
               <label>Prioritas</label>
               <select {...register("priority")}>
-                <option value="low">Rendah</option>
-                <option value="medium">Sedang</option>
-                <option value="high">Tinggi</option>
+                <option value="LOW">Rendah</option>
+                <option value="MEDIUM">Sedang</option>
+                <option value="HIGH">Tinggi</option>
               </select>
             </div>
           </div>
@@ -86,7 +79,6 @@ export function TaskForm({ onSubmit, onCancel, initialData = null }) {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }
