@@ -3,7 +3,7 @@ import { projectService } from "../services/project.service";
 import { useRealTimeProjects } from "./useRealTimeProjects";
 import { useNotif } from "../contexts/NotifContext";
 
-export function useProjects({ filter = "ALL" } = {}) {
+export function useProjects({ filter = "ALL", search = "" } = {}) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +17,7 @@ export function useProjects({ filter = "ALL" } = {}) {
     try {
       const params = {};
       if (filter !== "ALL") params.status = filter;
+      if (search) params.search = search;
       const res = await projectService.getAll(params);
       setProjects(res.data);
     } catch (err) {
@@ -24,7 +25,7 @@ export function useProjects({ filter = "ALL" } = {}) {
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, [filter, search]);
 
   useEffect(() => {
     fetchProjects();

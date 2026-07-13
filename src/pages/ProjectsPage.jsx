@@ -6,7 +6,8 @@ import { useProjects } from "../hooks/useProjects";
 
 export function ProjectsPage() {
   const [filter, setFilter] = useState("ALL");
-  const { projects, loading, error, createProject, updateProject, deleteProject } = useProjects({ filter });
+  const [search, setSearch] = useState("");
+  const { projects, loading, error, createProject, updateProject, deleteProject } = useProjects({ filter, search });
   
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -50,6 +51,13 @@ export function ProjectsPage() {
         </div>
 
         <div className="filter-bar">
+          <input 
+            type="text" 
+            placeholder="Cari nama project..." 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+            className="search-input"
+          />
           {["ALL", "ACTIVE", "COMPLETED", "ARCHIVED"].map((s) => (
             <button
               key={s}

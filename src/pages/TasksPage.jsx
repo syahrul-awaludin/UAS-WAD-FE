@@ -6,7 +6,8 @@ import { useTasks } from "../hooks/useTasks";
 
 export function TasksPage() {
   const [filter, setFilter] = useState("ALL");
-  const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks({ filter });
+  const [search, setSearch] = useState("");
+  const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks({ filter, search });
   
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -50,6 +51,13 @@ export function TasksPage() {
         </div>
 
         <div className="filter-bar">
+          <input 
+            type="text" 
+            placeholder="Cari judul task..." 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+            className="search-input"
+          />
           {["ALL", "TODO", "IN_PROGRESS", "DONE"].map((s) => (
             <button
               key={s}

@@ -4,7 +4,7 @@ import { useRealTimeTasks } from "./useRealTimeTasks";
 import { useRealTimeProjectTasks } from "./useRealTimeProjectTasks";
 import { useNotif } from "../contexts/NotifContext";
 
-export function useTasks({ filter = "ALL", projectId = null } = {}) {
+export function useTasks({ filter = "ALL", projectId = null, search = "" } = {}) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +26,7 @@ export function useTasks({ filter = "ALL", projectId = null } = {}) {
       const params = {};
       if (filter !== "ALL") params.status = filter;
       if (projectId) params.projectId = projectId;
+      if (search) params.search = search;
 
       const res = await taskService.getAll(params);
       setTasks(res.data);
@@ -34,7 +35,7 @@ export function useTasks({ filter = "ALL", projectId = null } = {}) {
     } finally {
       setLoading(false);
     }
-  }, [filter, projectId]);
+  }, [filter, projectId, search]);
 
   useEffect(() => {
     fetchTasks();
