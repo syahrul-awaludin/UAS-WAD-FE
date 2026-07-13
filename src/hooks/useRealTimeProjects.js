@@ -18,7 +18,7 @@ export function useRealTimeProjects(setProjects) {
       addToast({
         type: "INFO",
         title: "Project Baru",
-        message: `Project "${project.title}" telah ditambahkan.`,
+        message: `Project "${project.name}" telah ditambahkan.`,
       });
     };
 
@@ -27,7 +27,7 @@ export function useRealTimeProjects(setProjects) {
       addToast({
         type: "INFO",
         title: "Project Diperbarui",
-        message: `Project "${project.title}" telah diperbarui.`,
+        message: `Project "${project.name}" telah diperbarui.`,
       });
     };
 
