@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSocket } from "../contexts/SocketContext";
 import { useNotif } from "../contexts/NotifContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useRealTimeProjectTasks(projectId, setTasks) {
   const { socket } = useSocket();
   const { addToast } = useNotif();
+  const { user } = useAuth();
+  
+  const notifiedTasks = useRef(new Set());
 
   useEffect(() => {
     if (!socket || !projectId) return;
@@ -18,6 +22,15 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
         if (exists) return prev;
         return [task, ...prev];
       });
+
+      if (user && task.userId !== user.id && !notifiedTasks.current.has(task.id)) {
+        notifiedTasks.current.add(task.id);
+        addToast({
+          type: "INFO",
+          title: "Task Baru di Project",
+          message: `Anggota tim menambahkan task: "${task.title}"`,
+        });
+      }
     };
 
     const onTaskUpdated = ({ task }) => {
@@ -31,7 +44,20 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
     };
 
     const onTaskDeleted = ({ taskId }) => {
-      setTasks((prev) => prev.filter((t) => t.id !== taskId));
+      setTasks((prev) => {
+        const exists = prev.some((t) => t.id === taskId);
+        if (!exists) return prev;
+        return prev.filter((t) => t.id !== taskId);
+      });
+
+      if (!notifiedTasks.current.has(`del-${taskId}`)) {
+        notifiedTasks.current.add(`del-${taskId}`);
+        addToast({
+          type: "WARNING",
+          title: "Task Dihapus",
+          message: `Seseorang telah menghapus task dari project.`,
+        });
+      }
     };
 
     socket.on("task:created", onTaskCreated);

@@ -2,11 +2,13 @@ import { useState, useCallback, useEffect } from "react";
 import { taskService } from "../services/task.service";
 import { useRealTimeTasks } from "./useRealTimeTasks";
 import { useRealTimeProjectTasks } from "./useRealTimeProjectTasks";
+import { useNotif } from "../contexts/NotifContext";
 
 export function useTasks({ filter = "ALL", projectId = null } = {}) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToast } = useNotif();
 
   // Pasang Socket.IO listener secara dinamis berdasarkan konteks
   if (projectId) {
@@ -47,6 +49,7 @@ export function useTasks({ filter = "ALL", projectId = null } = {}) {
         if (exists) return prev;
         return [newTask, ...prev];
       });
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Task berhasil dibuat." });
       return true;
     } catch (err) {
       if (err.response?.data?.error?.details) {
@@ -65,6 +68,7 @@ export function useTasks({ filter = "ALL", projectId = null } = {}) {
       setTasks((prev) =>
         prev.map((t) => (t.id === id ? updatedTask : t))
       );
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Task berhasil diperbarui." });
       return true;
     } catch (err) {
       if (err.response?.data?.error?.details) {
@@ -82,6 +86,7 @@ export function useTasks({ filter = "ALL", projectId = null } = {}) {
     try {
       await taskService.remove(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Task berhasil dihapus." });
       return true;
     } catch (err) {
       alert("Gagal menghapus task: " + (err.response?.data?.error?.message || err.message));

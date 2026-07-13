@@ -5,12 +5,16 @@ import { TaskCard } from "../components/TaskCard";
 import { TaskForm } from "../components/TaskForm";
 import { projectService } from "../services/project.service";
 import { useTasks } from "../hooks/useTasks";
+import { useNotif } from "../contexts/NotifContext";
 
 export function ProjectDetailPage() {
   const { id } = useParams();
   const projectId = parseInt(id, 10);
 
   const [project, setProject] = useState(null);
+  const { addToast } = useNotif();
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [isInviting, setIsInviting] = useState(false);
   
   // Clean Architecture: Custom Hook handles Task state and Real-Time WebSocket binding
   const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks({ projectId });
@@ -29,6 +33,23 @@ export function ProjectDetailPage() {
     };
     fetchProject();
   }, [projectId]);
+
+  const handleInvite = async (e) => {
+    e.preventDefault();
+    if (!inviteEmail) return;
+    setIsInviting(true);
+    try {
+      await projectService.addMember(projectId, inviteEmail);
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Anggota berhasil diundang." });
+      setInviteEmail("");
+      const res = await projectService.getById(projectId);
+      setProject(res.data);
+    } catch (err) {
+      addToast({ type: "ERROR", title: "Gagal", message: err.response?.data?.error?.message || "Gagal mengundang." });
+    } finally {
+      setIsInviting(false);
+    }
+  };
 
   const handleCreateTask = async (formData) => {
     const success = await createTask(formData);
@@ -78,6 +99,29 @@ export function ProjectDetailPage() {
             <p className="task-description" style={{ fontSize: "1rem", color: "#4b5563" }}>
               {project.description || "Tidak ada deskripsi."}
             </p>
+
+            <div style={{ marginTop: "1rem", padding: "1rem", background: "#f9fafb", borderRadius: "8px" }}>
+              <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>Anggota Tim</h3>
+              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+                <span className="role-badge admin">Owner: {project.owner?.name}</span>
+                {project.members?.map(m => (
+                  <span key={m.id} className="role-badge user">{m.name} ({m.email})</span>
+                ))}
+              </div>
+              <form onSubmit={handleInvite} style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="email"
+                  placeholder="Email rekan tim..."
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  className="form-input"
+                  style={{ flex: 1, padding: "0.5rem" }}
+                />
+                <button type="submit" className="btn btn-primary" disabled={isInviting}>
+                  {isInviting ? "Mengundang..." : "Undang"}
+                </button>
+              </form>
+            </div>
           </div>
         )}
 

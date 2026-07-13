@@ -1,10 +1,15 @@
 import { useState, useCallback, useEffect } from "react";
 import { projectService } from "../services/project.service";
+import { useRealTimeProjects } from "./useRealTimeProjects";
+import { useNotif } from "../contexts/NotifContext";
 
-export function useProjects() {
+export function useProjects(statusFilter = "ALL") {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToast } = useNotif();
+
+  useRealTimeProjects(setProjects);
 
   const fetchProjects = useCallback(async () => {
     setLoading(true);
@@ -40,6 +45,7 @@ export function useProjects() {
       setProjects((prev) =>
         prev.map((p) => (p.id === id ? updatedProject : p))
       );
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Project berhasil diperbarui." });
       return true;
     } catch (err) {
       alert("Gagal menyimpan perubahan: " + (err.response?.data?.error?.message || err.message));
@@ -52,6 +58,7 @@ export function useProjects() {
     try {
       await projectService.remove(id);
       setProjects((prev) => prev.filter((p) => p.id !== id));
+      addToast({ type: "SUCCESS", title: "Berhasil", message: "Project berhasil dihapus." });
       return true;
     } catch (err) {
       alert("Gagal menghapus project: " + (err.response?.data?.error?.message || err.message));
