@@ -1,120 +1,46 @@
 # WAD Task Manager - Frontend
 
-Aplikasi frontend (Client-side) untuk mengelola daftar pekerjaan (Task Manager). Proyek ini dibangun menggunakan **React (Vite)** dan terhubung dengan RESTful API dari backend untuk mengelola autentikasi dan data tugas-tugas.
+Repositori ini berisi antarmuka pengguna (*Frontend*) untuk WAD Task Manager, dibangun menggunakan React.js dan Vite.
 
 ## 🚀 Teknologi yang Digunakan
+- **React.js (Vite)**: Pustaka frontend untuk membangun *Single Page Application* (SPA).
+- **React Router v6**: Menangani *client-side routing* dan *Protected Routes*.
+- **Axios**: Klien HTTP dengan *interceptor* kustom untuk menangani token (menyisipkan *Access Token* dan me-refresh token secara otomatis jika terjadi Error 401).
+- **Socket.IO Client**: Mendengarkan (*listen*) event WebSocket untuk menampilkan *live update*.
+- **CSS Asli (*Vanilla*)**: *Styling* dibangun dari nol dengan menggunakan *Utility Classes* tanpa *framework* eksternal seperti Tailwind atau Bootstrap.
 
-- **React 19**
-- **Vite** (Build Tool & Dev Server)
-- **React Router DOM** (Routing halaman)
-- **Axios** (HTTP Client, pengaturan *Interceptors* untuk token)
-- **React Hook Form** (Manajemen state form dan validasi)
+## 🏗️ Arsitektur Proyek
+Struktur Frontend dibuat sangat modular:
+- **`pages/`**: Komponen wadah (*Container*) untuk rute spesifik (contoh: `Dashboard`, `ProjectDetailPage`).
+- **`components/`**: Komponen presentasional yang bodoh dan dapat digunakan ulang (contoh: `TaskCard`, `Navbar`, `TaskForm`).
+- **`hooks/`**: *Custom Hooks* (`useTasks`, `useRealTimeProjectTasks`) memisahkan logika pengambilan *state* dan *event listener* dari komponen UI.
+- **`services/`**: Pembungkus (*wrapper*) Axios. Komponen tidak memanggil Axios secara langsung, melainkan memanggil layanan (contoh: `projectService.getAll()`).
+- **`contexts/`**: Mengelola status aplikasi secara global, termasuk `AuthContext` (Sesi), `NotifContext` (Sistem Toast), dan `SocketContext`.
 
 ## ✨ Fitur Utama
+1. **Autentikasi & Otorisasi**: Login, Register, sistem *Refresh Token*, dan *Role-Based Access Control* (User vs Admin).
+2. **Manajemen Project**: Membuat *Project* dan mengundang anggota tim lainnya berdasarkan Email.
+3. **Task Board**: Melihat, menambah, mengubah, dan menghapus *Task* dalam *Project*.
+4. **Kolaborasi Real-Time**: 
+   - Anda dapat bekerja bersama anggota tim lainnya dalam satu *Project*.
+   - Saat kolega Anda membuat/mengubah *Task*, layar Anda akan otomatis ter-update dan memunculkan *Toast* tanpa perlu *Refresh*.
 
-1. **Autentikasi (Auth)**
-   - Login & Register
-   - JWT Access Token & Refresh Token terintegrasi secara otomatis via Axios Interceptors.
-   - Proteksi Rute (Halaman login tidak bisa diakses jika sudah masuk, halaman tasks tidak bisa diakses jika belum masuk).
-2. **Manajemen Task (CRUD)**
-   - Melihat daftar task milik pengguna.
-   - Menambah task baru.
-   - Mengedit (update) data task seperti judul, deskripsi, status, prioritas, dan tenggat waktu.
-   - Menghapus task.
-3. **Filter & Navigasi**
-   - Filter task berdasarkan status (`TODO`, `IN_PROGRESS`, `DONE`).
-
-## ⚙️ Prasyarat (Prerequisites)
-
-Sebelum menjalankan aplikasi ini, pastikan Anda telah menginstal:
-- [Node.js](https://nodejs.org/en/) (Versi 18+ direkomendasikan)
-- [npm](https://www.npmjs.com/) (Biasanya sudah terpasang bersama Node.js)
-- Server Backend berjalan di lokal (menggunakan port `3000`).
-
-## 🛠 Instalasi dan Menjalankan Proyek
-
-1. **Clone repositori atau masuk ke direktori proyek:**
-   ```bash
-   cd wad-frontend
-   ```
-
-2. **Instal seluruh dependensi:**
+## 📦 Panduan Instalasi
+1. Lakukan *Clone* repositori ini, kemudian masuk ke dalam direktori.
+2. Instal semua dependensi:
    ```bash
    npm install
    ```
-
-3. **Menjalankan Development Server:**
+3. Konfigurasikan file lingkungan (buat file `.env` di direktori akar):
+   ```env
+   VITE_API_URL=http://localhost:5001/api/v1
+   ```
+4. Jalankan aplikasi dalam mode pengembangan:
    ```bash
    npm run dev
    ```
-   Aplikasi akan berjalan di `http://localhost:5173/`. Vite secara otomatis mem-proxy request yang diawali dengan `/api` ke server backend Anda (localhost:3000).
 
-## 📁 Struktur Folder Utama
-
-```
-src/
-├── components/     # Komponen UI yang digunakan berulang (Navbar, TaskCard, TaskForm, ProtectedRoute)
-├── contexts/       # React Context API (AuthContext untuk global state Autentikasi)
-├── lib/            # Konfigurasi library pihak ketiga (Instansiasi Axios & Interceptor)
-├── pages/          # Komponen halaman (LoginPage, RegisterPage, TasksPage)
-├── services/       # Service untuk memanggil endpoint API (auth.service, task.service)
-├── App.jsx         # Root component & Konfigurasi routing
-├── index.css       # Styling aplikasi
-└── main.jsx        # Entry point aplikasi React
-```
-
-## 🔐 Konfigurasi Proxy (Vite)
-
-Pada file `vite.config.js`, proyek ini telah diatur untuk menggunakan proxy ke backend guna menghindari masalah CORS selama pengembangan:
-
-```javascript
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      }
-    }
-  }
-})
-```
-Pastikan backend Express berjalan di `http://localhost:3000`.
-
-## 🎨 Tampilan UI / Styling
-Proyek ini menggunakan standard Vanilla CSS (di dalam `index.css`) untuk menyusun layout dan desain visual tanpa ketergantungan pada *framework CSS* pihak ketiga. 
+Aplikasi dapat diakses melalui `http://localhost:5173` (atau *port* yang diberikan Vite).
 
 ---
-
-## 🧪 Panduan Pengetesan (Manual / UAT)
-
-Aplikasi ini dapat diuji secara *End-to-End* (E2E) melalui browser untuk memvalidasi alur kerja pengguna secara keseluruhan. Berikut adalah skenario pengujiannya:
-
-### 1. Pendaftaran & Autentikasi (Register / Login)
-- Buka `http://localhost:5173/register`. Masukkan nama, email, dan password Anda.
-- Setelah berhasil mendaftar, Anda akan diarahkan untuk Login di halaman `/login`.
-![Halaman Registrasi](./public/screenshots/1-register.png)
-![Halaman Login](./public/screenshots/2-login.png)
-
-### 2. State Kosong (Empty State) & Profil
-- Jika ini adalah akun baru, halaman `Tasks` akan menampilkan layar bersih dengan pesan *"Belum ada task. Buat task pertamamu!"*.
-- Tekan menu **Profil** di Navbar atas untuk melihat detail akun yang sedang masuk (data diambil dari API profil).
-![State Kosong](./public/screenshots/3-empty-state.png)
-![Profil Pengguna](./public/screenshots/4-profile.png)
-
-### 3. Pembuatan & Pembaruan (Create & Edit Task)
-- **Create**: Klik tombol **+ Task Baru**. Isi formulir judul, deskripsi, status, prioritas, dan tenggat waktu. Setelah sukses, task akan langsung muncul di daftar!
-![Add Task Form](./public/screenshots/5-add-task.png)
-![Task Berhasil Ditambahkan](./public/screenshots/7-add-task-success.png)
-
-- **Edit**: Pada *Task Card* yang muncul, klik ikon pensil ✏️ untuk mengubah detailnya (seperti status "Sedang Dikerjakan"). Data akan otomatis diperbarui.
-![Edit Task Form](./public/screenshots/6-edit-task.png)
-
-### 4. Menghapus Task (Delete) & Logout
-- **Delete**: Klik ikon tempat sampah 🗑️ pada *Task Card*. Sebuah konfirmasi akan muncul (*"Yakin ingin menghapus task ini?"*). 
-- Pilih **OK**, maka data task akan dihapus secara permanen, dan tampilan akan kembali kosong atau ter-*update*.
-![Konfirmasi Delete](./public/screenshots/8-delete-confirmation.png)
-![Delete Sukses](./public/screenshots/9-success-delete.png)
-
-- **Logout**: Klik tombol **Keluar** di pojok kanan atas. Sesi Anda akan berakhir, mencegah akses tanpa izin.
+Dikembangkan untuk UAS Web Application Development.
