@@ -72,3 +72,8 @@ Apabila ada anggota tim yang menghapus *task*, layar yang lain juga akan ikut me
 ### Notifikasi Socket.IO
 Pesan informasi muncul bagi rekan yang ada di proyek sama. (Masalah *duplicate toast* sudah diatasi).
 ![Notification Toast](./public/screenshots/6-realtime-create2.png)
+
+### Sinkronisasi Penambahan Anggota (Real-Time)
+Saat *owner* proyek menambahkan anggota tim yang baru, sistem akan otomatis mendaftarkan dan menampilkan sinkronisasi *real-time* kepada anggota yang diundang di layar "Board Project".
+![Add Member 1](./public/screenshots/7-realtime-add-member1.png)
+![Add Member 2](./public/screenshots/8-realtime-add-member2.png)
