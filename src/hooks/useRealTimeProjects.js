@@ -1,43 +1,51 @@
 import { useEffect } from "react";
 import { useSocket } from "../contexts/SocketContext";
 import { useNotif } from "../contexts/NotifContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useRealTimeProjects(setProjects) {
   const { socket } = useSocket();
   const { addToast } = useNotif();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!socket) return;
 
-    const onProjectCreated = ({ project }) => {
+    const onProjectCreated = ({ project, senderId }) => {
       setProjects((prev) => {
         const exists = prev.some((p) => p.id === project.id);
         if (exists) return prev;
         return [project, ...prev];
       });
-      addToast({
-        type: "INFO",
-        title: "Project Baru",
-        message: `Project "${project.name}" telah ditambahkan.`,
-      });
+      if (user && senderId !== user.id) {
+        addToast({
+          type: "INFO",
+          title: "Project Baru",
+          message: `Project "${project.name}" telah ditambahkan.`,
+        });
+      }
     };
 
-    const onProjectUpdated = ({ project }) => {
+    const onProjectUpdated = ({ project, senderId }) => {
       setProjects((prev) => prev.map((p) => (p.id === project.id ? project : p)));
-      addToast({
-        type: "INFO",
-        title: "Project Diperbarui",
-        message: `Project "${project.name}" telah diperbarui.`,
-      });
+      if (user && senderId !== user.id) {
+        addToast({
+          type: "INFO",
+          title: "Project Diperbarui",
+          message: `Project "${project.name}" telah diperbarui.`,
+        });
+      }
     };
 
-    const onProjectDeleted = ({ projectId }) => {
+    const onProjectDeleted = ({ projectId, senderId }) => {
       setProjects((prev) => prev.filter((p) => p.id !== projectId));
-      addToast({
-        type: "WARNING",
-        title: "Project Dihapus",
-        message: `Sebuah project telah dihapus.`,
-      });
+      if (user && senderId !== user.id) {
+        addToast({
+          type: "WARNING",
+          title: "Project Dihapus",
+          message: `Sebuah project telah dihapus.`,
+        });
+      }
     };
 
     socket.on("project:created", onProjectCreated);

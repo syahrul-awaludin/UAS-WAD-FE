@@ -19,14 +19,14 @@ export function useRealTimeTasks(setTasks) {
     if (!socket) return;
 
     // ── task:created ────────────────────────────────────
-    const onTaskCreated = ({ task }) => {
+    const onTaskCreated = ({ task, senderId }) => {
       setTasks((prev) => {
         const exists = prev.some((t) => t.id === task.id);
         if (exists) return prev;
         return [task, ...prev];
       });
 
-      if (user && task.userId !== user.id && !notifiedTasks.current.has(task.id)) {
+      if (user && senderId !== user.id && !notifiedTasks.current.has(task.id)) {
         notifiedTasks.current.add(task.id);
         addToast({
           type: "INFO",
@@ -37,24 +37,27 @@ export function useRealTimeTasks(setTasks) {
     };
 
     // ── task:updated ────────────────────────────────────
-    const onTaskUpdated = ({ task }) => {
+    const onTaskUpdated = ({ task, senderId }) => {
       setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
-      addToast({
-        type: "INFO",
-        title: "Task Diperbarui",
-        message: `"${task.title}" telah diperbarui oleh pengguna lain.`,
-      });
+      
+      if (user && senderId !== user.id) {
+        addToast({
+          type: "INFO",
+          title: "Task Diperbarui",
+          message: `"${task.title}" telah diperbarui oleh pengguna lain.`,
+        });
+      }
     };
 
     // ── task:deleted ────────────────────────────────────
-    const onTaskDeleted = ({ taskId }) => {
+    const onTaskDeleted = ({ taskId, senderId }) => {
       setTasks((prev) => {
         const exists = prev.some((t) => t.id === taskId);
         if (!exists) return prev;
         return prev.filter((t) => t.id !== taskId);
       });
 
-      if (!notifiedTasks.current.has(`del-${taskId}`)) {
+      if (user && senderId !== user.id && !notifiedTasks.current.has(`del-${taskId}`)) {
         notifiedTasks.current.add(`del-${taskId}`);
         addToast({
           type: "WARNING",
