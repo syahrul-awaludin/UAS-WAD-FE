@@ -55,15 +55,28 @@ Aplikasi Frontend ini terhubung penuh secara _real-time_ dengan Backend mengguna
 
 ## 📸 Dokumentasi Fitur Real-Time
 
-Aplikasi ini mendukung kolaborasi secara *real-time* di mana setiap penambahan, pembaruan, dan penghapusan *task* langsung disinkronisasi ke seluruh layar pengguna lain dalam satu tim berkat integrasi **Socket.IO**.
+Aplikasi ini mendukung kolaborasi secara *real-time* di mana setiap aktivitas langsung disinkronisasi ke layar pengguna lain dalam satu tim berkat integrasi **Socket.IO**.
 
-### Sinkronisasi Penambahan Anggota (Real-Time)
-Saat *owner* proyek menambahkan anggota tim yang baru, sistem akan otomatis mendaftarkan dan menampilkan sinkronisasi *real-time* kepada anggota yang diundang di layar "Board Project".
-![Add Member](./public/screenshots/2-realtime-update.png)
+### Sinkronisasi Penghapusan Proyek (Real-Time)
+Ketika *owner* menghapus proyek, proyek tersebut akan langsung hilang dari layar "Board Project" seluruh anggota tim lainnya beserta munculnya notifikasi *toast* secara *real-time*.
+![Delete Project](./public/screenshots/delete-project.png)
+
+### Sinkronisasi Pembaruan Proyek (Real-Time)
+Setiap perubahan informasi proyek akan langsung diperbarui di layar pengguna lain tanpa me-*refresh* halaman.
+![Update Project](./public/screenshots/update-project.png)
 
 ### Sinkronisasi Penambahan Task (Real-Time)
-Tampilan antar pengguna ketika salah satu anggota tim membuat *task* baru.
-![Create Task 1](./public/screenshots/5-realtime-create1.png)
+Tampilan seketika antar pengguna ketika salah satu anggota tim membuat *task* baru.
+![Create Task](./public/screenshots/create-task.png)
 
+### Sinkronisasi Pembaruan Task (Real-Time)
+Perubahan status atau detail *task* akan langsung ter-*update* pada layar kolaborator.
+![Edit Task](./public/screenshots/edit-task.png)
 
+### Sinkronisasi Penghapusan Task (Real-Time)
+Apabila ada anggota tim yang menghapus *task*, daftar *task* di layar anggota lain akan ikut terhapus.
+![Delete Task](./public/screenshots/delete-task.png)
 
+### Sinkronisasi Penugasan Anggota
+Menampilkan interaksi saat anggota ditugaskan atau diundang.
+![Assign Task](./public/screenshots/assign-task.png)
