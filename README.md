@@ -60,7 +60,6 @@ Aplikasi ini mendukung kolaborasi secara *real-time* di mana setiap penambahan, 
 ### Sinkronisasi Penambahan Task (Real-Time)
 Tampilan antar pengguna ketika salah satu anggota tim membuat *task* baru.
 ![Create Task 1](./public/screenshots/5-realtime-create1.png)
-![Create Task 2](./public/screenshots/6-realtime-create2.png)
 
 ### Sinkronisasi Pembaruan Task (Real-Time)
 Setiap pembaruan *task* akan langsung ter-*update* tanpa perlu me-*refresh* halaman.
@@ -72,4 +71,4 @@ Apabila ada anggota tim yang menghapus *task*, layar yang lain juga akan ikut me
 
 ### Notifikasi Socket.IO
 Pesan informasi muncul bagi rekan yang ada di proyek sama. (Masalah *duplicate toast* sudah diatasi).
-![Notification Toast](./public/screenshots/4-realtime-toast.png)
+![Notification Toast](./public/screenshots/6-realtime-create2.png)
