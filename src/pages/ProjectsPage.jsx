@@ -5,7 +5,8 @@ import { ProjectForm } from "../components/ProjectForm";
 import { useProjects } from "../hooks/useProjects";
 
 export function ProjectsPage() {
-  const { projects, loading, error, createProject, updateProject, deleteProject } = useProjects();
+  const [filter, setFilter] = useState("ALL");
+  const { projects, loading, error, createProject, updateProject, deleteProject } = useProjects({ filter });
   
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -46,6 +47,18 @@ export function ProjectsPage() {
           <button className="btn-primary" onClick={() => setShowForm(true)}>
             + Project Baru
           </button>
+        </div>
+
+        <div className="filter-bar">
+          {["ALL", "ACTIVE", "COMPLETED", "ARCHIVED"].map((s) => (
+            <button
+              key={s}
+              className={`filter-btn ${filter === s ? "active" : ""}`}
+              onClick={() => setFilter(s)}
+            >
+              {s === "ALL" ? "Semua" : s === "ACTIVE" ? "Aktif" : s === "COMPLETED" ? "Selesai" : "Diarsipkan"}
+            </button>
+          ))}
         </div>
 
         {loading && <p className="state-msg">Memuat project...</p>}
