@@ -16,14 +16,14 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
     socket.emit("project:join", projectId);
 
     const onTaskCreated = ({ task, senderId }) => {
-      if (task.projectId != projectId) return;
+      if (String(task.projectId) !== String(projectId)) return;
       setTasks((prev) => {
-        const exists = prev.some((t) => t.id === task.id);
+        const exists = prev.some((t) => String(t.id) === String(task.id));
         if (exists) return prev;
         return [task, ...prev];
       });
 
-      if (user && senderId !== user.id && !notifiedTasks.current.has(task.id)) {
+      if (user && String(senderId) !== String(user.id) && !notifiedTasks.current.has(task.id)) {
         notifiedTasks.current.add(task.id);
         addToast({
           type: "INFO",
@@ -34,10 +34,10 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
     };
 
     const onTaskUpdated = ({ task, senderId }) => {
-      if (task.projectId != projectId) return;
-      setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
+      if (String(task.projectId) !== String(projectId)) return;
+      setTasks((prev) => prev.map((t) => (String(t.id) === String(task.id) ? task : t)));
       
-      if (user && senderId !== user.id) {
+      if (user && String(senderId) !== String(user.id)) {
         addToast({
           type: "INFO",
           title: "Task Project Diperbarui",
@@ -47,13 +47,14 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
     };
 
     const onTaskDeleted = ({ taskId, senderId }) => {
+      console.log("onTaskDeleted received:", { taskId, senderId });
       setTasks((prev) => {
-        const exists = prev.some((t) => t.id === taskId);
+        const exists = prev.some((t) => String(t.id) === String(taskId));
         if (!exists) return prev;
-        return prev.filter((t) => t.id !== taskId);
+        return prev.filter((t) => String(t.id) !== String(taskId));
       });
 
-      if (user && senderId !== user.id && !notifiedTasks.current.has(`del-${taskId}`)) {
+      if (user && String(senderId) !== String(user.id) && !notifiedTasks.current.has(`del-${taskId}`)) {
         notifiedTasks.current.add(`del-${taskId}`);
         addToast({
           type: "WARNING",
@@ -73,5 +74,5 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
       socket.off("task:deleted", onTaskDeleted);
       socket.emit("project:leave", projectId);
     };
-  }, [socket, projectId, setTasks, addToast]);
+  }, [socket, projectId, setTasks, addToast, user]);
 }

@@ -13,11 +13,11 @@ export function useRealTimeProjects(setProjects) {
 
     const onProjectCreated = ({ project, senderId }) => {
       setProjects((prev) => {
-        const exists = prev.some((p) => p.id === project.id);
+        const exists = prev.some((p) => String(p.id) === String(project.id));
         if (exists) return prev;
         return [project, ...prev];
       });
-      if (user && senderId !== user.id) {
+      if (user && String(senderId) !== String(user.id)) {
         addToast({
           type: "INFO",
           title: "Project Baru",
@@ -27,8 +27,8 @@ export function useRealTimeProjects(setProjects) {
     };
 
     const onProjectUpdated = ({ project, senderId }) => {
-      setProjects((prev) => prev.map((p) => (p.id === project.id ? project : p)));
-      if (user && senderId !== user.id) {
+      setProjects((prev) => prev.map((p) => (String(p.id) === String(project.id) ? project : p)));
+      if (user && String(senderId) !== String(user.id)) {
         addToast({
           type: "INFO",
           title: "Project Diperbarui",
@@ -38,8 +38,8 @@ export function useRealTimeProjects(setProjects) {
     };
 
     const onProjectDeleted = ({ projectId, senderId }) => {
-      setProjects((prev) => prev.filter((p) => p.id !== projectId));
-      if (user && senderId !== user.id) {
+      setProjects((prev) => prev.filter((p) => String(p.id) !== String(projectId)));
+      if (user && String(senderId) !== String(user.id)) {
         addToast({
           type: "WARNING",
           title: "Project Dihapus",
@@ -57,5 +57,5 @@ export function useRealTimeProjects(setProjects) {
       socket.off("project:updated", onProjectUpdated);
       socket.off("project:deleted", onProjectDeleted);
     };
-  }, [socket, setProjects, addToast]);
+  }, [socket, setProjects, addToast, user]);
 }

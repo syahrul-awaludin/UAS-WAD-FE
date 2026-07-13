@@ -21,12 +21,12 @@ export function useRealTimeTasks(setTasks) {
     // ── task:created ────────────────────────────────────
     const onTaskCreated = ({ task, senderId }) => {
       setTasks((prev) => {
-        const exists = prev.some((t) => t.id === task.id);
+        const exists = prev.some((t) => String(t.id) === String(task.id));
         if (exists) return prev;
         return [task, ...prev];
       });
 
-      if (user && senderId !== user.id && !notifiedTasks.current.has(task.id)) {
+      if (user && String(senderId) !== String(user.id) && !notifiedTasks.current.has(task.id)) {
         notifiedTasks.current.add(task.id);
         addToast({
           type: "INFO",
@@ -38,9 +38,9 @@ export function useRealTimeTasks(setTasks) {
 
     // ── task:updated ────────────────────────────────────
     const onTaskUpdated = ({ task, senderId }) => {
-      setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
+      setTasks((prev) => prev.map((t) => (String(t.id) === String(task.id) ? task : t)));
       
-      if (user && senderId !== user.id) {
+      if (user && String(senderId) !== String(user.id)) {
         addToast({
           type: "INFO",
           title: "Task Diperbarui",
@@ -52,12 +52,12 @@ export function useRealTimeTasks(setTasks) {
     // ── task:deleted ────────────────────────────────────
     const onTaskDeleted = ({ taskId, senderId }) => {
       setTasks((prev) => {
-        const exists = prev.some((t) => t.id === taskId);
+        const exists = prev.some((t) => String(t.id) === String(taskId));
         if (!exists) return prev;
-        return prev.filter((t) => t.id !== taskId);
+        return prev.filter((t) => String(t.id) !== String(taskId));
       });
 
-      if (user && senderId !== user.id && !notifiedTasks.current.has(`del-${taskId}`)) {
+      if (user && String(senderId) !== String(user.id) && !notifiedTasks.current.has(`del-${taskId}`)) {
         notifiedTasks.current.add(`del-${taskId}`);
         addToast({
           type: "WARNING",
@@ -85,5 +85,5 @@ export function useRealTimeTasks(setTasks) {
       socket.off("task:deleted", onTaskDeleted);
       socket.off("notification", onNotification);
     };
-  }, [socket, setTasks, addToast]);
+  }, [socket, setTasks, addToast, user]);
 }
