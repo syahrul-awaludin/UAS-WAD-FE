@@ -1,46 +1,50 @@
-# WAD Task Manager - Frontend
+# WAD Capstone - Frontend
 
-Repositori ini berisi antarmuka pengguna (*Frontend*) untuk WAD Task Manager, dibangun menggunakan React.js dan Vite.
+Repositori ini berisi *source code* untuk antarmuka pengguna (Frontend) dari aplikasi **WAD Task Manager**, yang dikembangkan untuk memenuhi tugas akhir (UAS) mata kuliah Web Application Development.
 
 ## 🚀 Teknologi yang Digunakan
-- **React.js (Vite)**: Pustaka frontend untuk membangun *Single Page Application* (SPA).
-- **React Router v6**: Menangani *client-side routing* dan *Protected Routes*.
-- **Axios**: Klien HTTP dengan *interceptor* kustom untuk menangani token (menyisipkan *Access Token* dan me-refresh token secara otomatis jika terjadi Error 401).
-- **Socket.IO Client**: Mendengarkan (*listen*) event WebSocket untuk menampilkan *live update*.
-- **CSS Asli (*Vanilla*)**: *Styling* dibangun dari nol dengan menggunakan *Utility Classes* tanpa *framework* eksternal seperti Tailwind atau Bootstrap.
+- **React.js**: Library JavaScript untuk membangun antarmuka pengguna yang dinamis.
+- **Vite**: *Build tool* modern yang sangat cepat untuk *scaffolding* dan pengembangan lokal.
+- **Tailwind CSS & DaisyUI**: Framework CSS *utility-first* beserta komponen UI *pre-built* untuk desain yang responsif dan elegan (Dark Mode didukung penuh).
+- **Socket.IO-Client**: Digunakan untuk menangkap *event* secara *real-time* (WebSockets) agar halaman terbarui secara otomatis saat ada kolaborasi tim.
+- **Axios**: HTTP Client untuk melakukan *request* ke REST API Backend.
 
-## 🏗️ Arsitektur Proyek
-Struktur Frontend dibuat sangat modular:
-- **`pages/`**: Komponen wadah (*Container*) untuk rute spesifik (contoh: `Dashboard`, `ProjectDetailPage`).
-- **`components/`**: Komponen presentasional yang bodoh dan dapat digunakan ulang (contoh: `TaskCard`, `Navbar`, `TaskForm`).
-- **`hooks/`**: *Custom Hooks* (`useTasks`, `useRealTimeProjectTasks`) memisahkan logika pengambilan *state* dan *event listener* dari komponen UI.
-- **`services/`**: Pembungkus (*wrapper*) Axios. Komponen tidak memanggil Axios secara langsung, melainkan memanggil layanan (contoh: `projectService.getAll()`).
-- **`contexts/`**: Mengelola status aplikasi secara global, termasuk `AuthContext` (Sesi), `NotifContext` (Sistem Toast), dan `SocketContext`.
+## 🏗️ Arsitektur Proyek (React Hooks Pattern)
+Aplikasi ini menstrukturkan kodenya berdasarkan *Clean Architecture* gaya React (pemisahan *View* dan *Logic*):
+- **`src/pages/`**: Komponen utama pembentuk halaman (UI).
+- **`src/hooks/`**: *Custom Hooks* (seperti `useTasks`, `useProjects`) yang memisahkan logika pengambilan data (Fetching) dan *State Management* dari antarmuka pengguna.
+- **`src/services/`**: Pembungkus Axios untuk memanggil *endpoint* API (isolasi logika jaringan).
+- **`src/contexts/`**: *React Context* untuk menyediakan *State* secara global (seperti `AuthContext` untuk sesi pengguna dan `SocketContext` untuk koneksi WebSocket).
+- **`src/components/`**: Komponen UI kecil yang dapat digunakan kembali (*reusable*).
 
-## ✨ Fitur Utama
-1. **Autentikasi & Otorisasi**: Login, Register, sistem *Refresh Token*, dan *Role-Based Access Control* (User vs Admin).
-2. **Manajemen Project**: Membuat *Project* dan mengundang anggota tim lainnya berdasarkan Email.
-3. **Task Board**: Melihat, menambah, mengubah, dan menghapus *Task* dalam *Project*.
-4. **Kolaborasi Real-Time**: 
-   - Anda dapat bekerja bersama anggota tim lainnya dalam satu *Project*.
-   - Saat kolega Anda membuat/mengubah *Task*, layar Anda akan otomatis ter-update dan memunculkan *Toast* tanpa perlu *Refresh*.
+---
 
-## 📦 Panduan Instalasi
-1. Lakukan *Clone* repositori ini, kemudian masuk ke dalam direktori.
-2. Instal semua dependensi:
+## 📦 Panduan Setup Lokal
+
+1. Pastikan **Node.js** terinstal di mesin Anda.
+2. Pastikan **Backend WAD Capstone** sudah berjalan secara lokal (biasanya di port `5001`).
+3. *Clone* repositori ini dan masuk ke direktori `wad-frontend`.
+4. Install semua dependensi NPM:
    ```bash
    npm install
    ```
-3. Konfigurasikan file lingkungan (buat file `.env` di direktori akar):
+5. Buat file `.env` di *root* direktori dan atur URL API Backend:
    ```env
    VITE_API_URL=http://localhost:5001/api/v1
    ```
-4. Jalankan aplikasi dalam mode pengembangan:
+   *(Catatan: URL secara bawaan adalah localhost, ganti dengan URL VPS jika ingin menembak ke server langsung).*
+6. Jalankan mode *development*:
    ```bash
    npm run dev
    ```
-
-Aplikasi dapat diakses melalui `http://localhost:5173` (atau *port* yang diberikan Vite).
+7. Buka browser dan akses `http://localhost:5002` (atau *port* yang diberikan Vite di terminal).
 
 ---
-Dikembangkan untuk UAS Web Application Development.
+
+## 🌐 Integrasi Real-Time (Socket.IO)
+Aplikasi Frontend ini terhubung penuh secara _real-time_ dengan Backend menggunakan pola _Context API_. 
+- Setiap kali Anda melakukan perubahan Tugas atau Proyek, perubahan tersebut dipantulkan ke semua rekan tim yang membuka Proyek yang sama, memicu _Custom Hooks_ untuk otomatis mengambil ulang (Re-fetch) data tanpa memuat ulang halaman (*Auto-update UI*).
+- Jumlah pengguna *online* dan *offline* direkam secara seketika (*live*).
+
+---
+*Dikembangkan untuk Tugas Akhir (UAS) Web Application Development.*
