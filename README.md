@@ -57,23 +57,13 @@ Aplikasi Frontend ini terhubung penuh secara _real-time_ dengan Backend mengguna
 
 Aplikasi ini mendukung kolaborasi secara *real-time* di mana setiap penambahan, pembaruan, dan penghapusan *task* langsung disinkronisasi ke seluruh layar pengguna lain dalam satu tim berkat integrasi **Socket.IO**.
 
+### Sinkronisasi Penambahan Anggota (Real-Time)
+Saat *owner* proyek menambahkan anggota tim yang baru, sistem akan otomatis mendaftarkan dan menampilkan sinkronisasi *real-time* kepada anggota yang diundang di layar "Board Project".
+![Add Member](./public/screenshots/2-realtime-update.png)
+
 ### Sinkronisasi Penambahan Task (Real-Time)
 Tampilan antar pengguna ketika salah satu anggota tim membuat *task* baru.
 ![Create Task 1](./public/screenshots/5-realtime-create1.png)
 
-### Sinkronisasi Pembaruan Task (Real-Time)
-Setiap pembaruan *task* akan langsung ter-*update* tanpa perlu me-*refresh* halaman.
-![Update Task](./public/screenshots/2-realtime-update.png)
 
-### Sinkronisasi Penghapusan Task (Real-Time)
-Apabila ada anggota tim yang menghapus *task*, layar yang lain juga akan ikut menghapus *task* tersebut dan menampilkan notifikasi (apabila orang lain yang menghapus).
-![Delete Task](./public/screenshots/3-realtime-delete.png)
 
-### Notifikasi Socket.IO
-Pesan informasi muncul bagi rekan yang ada di proyek sama. (Masalah *duplicate toast* sudah diatasi).
-![Notification Toast](./public/screenshots/6-realtime-create2.png)
-
-### Sinkronisasi Penambahan Anggota (Real-Time)
-Saat *owner* proyek menambahkan anggota tim yang baru, sistem akan otomatis mendaftarkan dan menampilkan sinkronisasi *real-time* kepada anggota yang diundang di layar "Board Project".
-![Add Member 1](./public/screenshots/7-realtime-add-member1.png)
-![Add Member 2](./public/screenshots/8-realtime-add-member2.png)
