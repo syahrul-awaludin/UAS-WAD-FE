@@ -1,5 +1,7 @@
 # WAD Capstone - Frontend
 
+> 🌐 **Live Production:** [https://uas-wad.syahrulawaludin.my.id](https://uas-wad.syahrulawaludin.my.id)
+
 Repositori ini berisi *source code* untuk antarmuka pengguna (Frontend) dari aplikasi **WAD Task Manager**, yang dikembangkan untuk memenuhi tugas akhir (UAS) mata kuliah Web Application Development.
 
 ## 🚀 Teknologi yang Digunakan
