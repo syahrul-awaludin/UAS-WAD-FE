@@ -9,14 +9,14 @@ import { useAuth } from "../contexts/AuthContext";
  * setTasks → setter untuk update state
  */
 export function useRealTimeTasks(setTasks) {
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const { addToast } = useNotif();
   const { user } = useAuth();
   
   const notifiedTasks = useRef(new Set());
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !isConnected) return;
 
     // ── task:created ────────────────────────────────────
     const onTaskCreated = ({ task, senderId }) => {
@@ -85,5 +85,5 @@ export function useRealTimeTasks(setTasks) {
       socket.off("task:deleted", onTaskDeleted);
       socket.off("notification", onNotification);
     };
-  }, [socket, setTasks, addToast, user]);
+  }, [socket, isConnected, setTasks, addToast, user]);
 }

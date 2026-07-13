@@ -4,14 +4,14 @@ import { useNotif } from "../contexts/NotifContext";
 import { useAuth } from "../contexts/AuthContext";
 
 export function useRealTimeProjectTasks(projectId, setTasks) {
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const { addToast } = useNotif();
   const { user } = useAuth();
   
   const notifiedTasks = useRef(new Set());
 
   useEffect(() => {
-    if (!socket || !projectId) return;
+    if (!socket || !projectId || !isConnected) return;
 
     socket.emit("project:join", projectId);
 
@@ -72,7 +72,9 @@ export function useRealTimeProjectTasks(projectId, setTasks) {
       socket.off("task:created", onTaskCreated);
       socket.off("task:updated", onTaskUpdated);
       socket.off("task:deleted", onTaskDeleted);
-      socket.emit("project:leave", projectId);
+      if (socket.connected) {
+        socket.emit("project:leave", projectId);
+      }
     };
-  }, [socket, projectId, setTasks, addToast, user]);
+  }, [socket, isConnected, projectId, setTasks, addToast, user]);
 }

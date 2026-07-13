@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSocket } from "../contexts/SocketContext";
 import { useNotif } from "../contexts/NotifContext";
 import { useAuth } from "../contexts/AuthContext";
 
 export function useRealTimeProjects(setProjects) {
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const { addToast } = useNotif();
   const { user } = useAuth();
 
+  const notifiedProjects = useRef(new Set());
+
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !isConnected) return;
 
     const onProjectCreated = ({ project, senderId }) => {
       setProjects((prev) => {
@@ -57,5 +59,5 @@ export function useRealTimeProjects(setProjects) {
       socket.off("project:updated", onProjectUpdated);
       socket.off("project:deleted", onProjectDeleted);
     };
-  }, [socket, setProjects, addToast, user]);
+  }, [socket, isConnected, setProjects, addToast, user]);
 }
